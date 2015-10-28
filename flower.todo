@@ -1,0 +1,39 @@
+* Create 4 pages
+	1) 	Homepage called “Flower Catalog”
+	2) 	Abeliophyllum
+	3) 	Ageratum
+	4)  Guest Book
+
+	Add stylesheet to the page containg the body styling with some padding
+
+1 - Flower Catalog
+--------------------
+ 	* 	Name the page to Flower Catalog
+ 	* 	Add Heading of the page Flower Catalog at the center with yellow color
+ 	* 	Add image of flowers
+ 	* 	Add 3 links to the pages 1) 	Abeliophyllum
+								 2) 	Ageratum
+								 3) 	Guest Book 		which will lead to those pages.
+	* 	Add image of A watering Jar image, which when clicked will hide for a second
+	* 	Add styling to the contents of the page
+
+2 - Abeliophyllum
+------------------
+ 	*	Name the page to Abeliophyllum at the center top position
+ 	* 	Add heading of the page to Abeliophyllum
+ 	* 	Add picture of the Abeliophyllum flower to the page 
+ 	*   Add information about this flower with a good format at the right of the flower image
+ 	* 	Add a link to download the content as pdf
+ 	* 	Add a link which will lead to the homepage
+
+3 - Ageratum
+-------------
+	* 	Do same as Abeliophyllum page with the content of Ageratum
+
+4 - Guest Book
+---------------
+	* 	Give page name to Guest Book
+	*	Add heading Guest Book at the center top of the page
+	* 	Add a link to go back to the home page
+	* 	Add 2 text fields which will take name and comments
+	* 	Add a submit button which will take name and comments and store it in a database with Date­time, Name and Comment of each ordered with latest comment in reverse chronological order.
