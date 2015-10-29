@@ -8,23 +8,23 @@ lib.getMethod = function(path){
 	if(!path.match(/\?/g))
 		return false;
 	var lastSlash = path.lastIndexOf('/');
-	var userRequest = path.slice(lastSlash + 1);
-	var method = userRequest.split('?')[0];
-	return method;
+	var qnMark = path.indexOf('?');
+	return path.substr(lastSlash + 1,qnMark - 1);
+}
+var seperateValue = function(data,result){
+	data.forEach(function(boundedValue){
+		var equalPosition = boundedValue.indexOf('=');
+		var key = boundedValue.substr(0,equalPosition).replace(/\+/gi,' ');
+		var value = boundedValue.substr(equalPosition + 1).replace(/\+/gi,' ');
+		result[key] = value;
+	});
 }
 lib.decomposePath = function(path){
 	if(!lib.getMethod(path))
 		return false;
-	result = {};
-	result.method = lib.getMethod(path);
+	var result = {};
 	var data = path.split('?')[1].split('&');
-	var seperateValue = function(boundedValue){
-		var equalPosition = boundedValue.indexOf('=');
-		var key = boundedValue.substr(0,equalPosition);
-		var value = boundedValue.substr(equalPosition + 1);
-		result[key] = value;
-	}
-	data.forEach(seperateValue);
+	seperateValue(data,result);
 	return result;
 }
 lib.convertToString = function(object){
@@ -34,28 +34,32 @@ lib.hasKey = function(obj,key){
 	return Object.keys(obj).indexOf(key) != -1;
 }
 lib.composeData = function(data){
-	data = data.split('\r\n');
-	data.splice(data.length - 1,1);
+	data = data.split('\r\n').reverse();
+	data.splice(0,1);
 	var comments = data.map(function(string){
 		return JSON.parse(string);
 	});
 	var htmlFormat = comments.map(function(comment){
-		return comment.name+'<br>'+comment.comment;
-	}).join('<br>');
+		return comment.time +' <b>'+comment.name +'</b><br>'+ comment.comment;
+	}).join('<br><hr>');
 	return htmlFormat + '<br>';
 }
 lib.getComments = function(){
-	return fs.readFileSync('./comments.txt','utf8');
+	var allComments = fs.readFileSync('./comments.txt','utf8');
+	return allComments;
 }
 //------------------------------------------------------------
 act.addComment = function(commentData){
-	fs.appendFile('comments.txt',lib.convertToString(commentData));
+	if(!commentData.name || !commentData.comment)
+		return;
+	fs.appendFileSync('comments.txt',lib.convertToString(commentData));
 }
 act.getPage = function(path,response){
 	if(path == '/guestbook.html'){
 		var comments = lib.getComments();
-		console.log(comments)
-		fs.appendFile('guestbook.html',lib.composeData(comments) + '</body></html>');
+		var guestbook = fs.readFileSync('./gbTemplate.html','utf8');
+		var fullpage = guestbook + lib.composeData(comments) + '</body></html>';
+		fs.writeFileSync('./guestbook.html',fullpage);
 	}
 
 	fs.readFile('.'+path,function(err,data){

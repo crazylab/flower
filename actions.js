@@ -6,4 +6,4 @@ var hideFor1Sec = function(id){
 }
 var showComments = function(){
 	var comments = '/comments.csv';
-} 
+}

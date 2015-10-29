@@ -3,19 +3,24 @@ var fs = require('fs');
 var lib = require('./serverLib.js').lib;
 var act = require('./serverLib.js').act;
 
+var submitComment = function(){
+	
+}
 var requestHandler = function (req, res) {
 	var path = req.url;
 	if(path == '/')
 		path = '/index.html';
-	console.log(path);
-	if(lib.getMethod(path)){
+	var isCommentMethod = path.match(/\/guestbook.html\?/g) ? true : false;
+	if(isCommentMethod){
 		var userRequest = lib.decomposePath(path);
+		var date = new Date();
 		var comment = {
+			time : date.toLocaleDateString() +'\t'+ date.toLocaleTimeString(),
 			name : userRequest.name,
-			comment : userRequest.comment
+			comment : userRequest.comment,
 		};
-		lib.hasKey(act,userRequest.method) && act[userRequest.method](comment);
-		path = '/guestbook.html'; 			//Need to change here
+		act.addComment(comment);
+		path = "/guestbook.html";
 	}
 	act.getPage(path,res);
 }
