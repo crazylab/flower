@@ -1,16 +1,22 @@
 var fs = require('fs');
 
 var lib = {};
+var act = {};
 exports.lib = lib;
-
-lib.isMethodAvaiable = function(path){
-	return path.match(/\?/g) ? true : false;
+exports.act = act;
+lib.getMethod = function(path){
+	if(!path.match(/\?/g))
+		return false;
+	var lastSlash = path.lastIndexOf('/');
+	var userRequest = path.slice(lastSlash + 1);
+	var method = userRequest.split('?')[0];
+	return method;
 }
 lib.decomposePath = function(path){
-	if(!lib.isMethodAvaiable(path))
+	if(!lib.getMethod(path))
 		return false;
 	result = {};
-	result.method = path.split('?')[0].slice(1);
+	result.method = lib.getMethod(path);
 	var data = path.split('?')[1].split('&');
 	var seperateValue = function(boundedValue){
 		var equalPosition = boundedValue.indexOf('=');
@@ -21,15 +27,40 @@ lib.decomposePath = function(path){
 	data.forEach(seperateValue);
 	return result;
 }
-lib.convertToCSV = function(object){
-	return JSON.stringify(object) + ',';
+lib.convertToString = function(object){
+	return JSON.stringify(object) + '\r\n';
 }
-lib.addComment = function(commentData,response){
-	var onError = function (err) {
-		if (err) throw err;
-		console.log('It\'s saved!');
-	 	response.end('./guestbook.html');
+lib.hasKey = function(obj,key){
+	return Object.keys(obj).indexOf(key) != -1;
+}
+lib.composeData = function(data){
+	data = data.split('\r\n');
+	data.splice(data.length - 1,1);
+	var comments = data.map(function(string){
+		return JSON.parse(string);
+	});
+	var htmlFormat = comments.map(function(comment){
+		return comment.name+'<br>'+comment.comment;
+	}).join('<br>');
+	return htmlFormat + '<br>';
+}
+lib.getComments = function(){
+	return fs.readFileSync('./comments.txt','utf8');
+}
+//------------------------------------------------------------
+act.addComment = function(commentData){
+	fs.appendFile('comments.txt',lib.convertToString(commentData));
+}
+act.getPage = function(path,response){
+	if(path == '/guestbook.html'){
+		var comments = lib.getComments();
+		console.log(comments)
+		fs.appendFile('guestbook.html',lib.composeData(comments) + '</body></html>');
 	}
-	fs.appendFile('comments.csv', lib.convertToCSV(commentData), onError);
-	response.end('./guestbook.html');
+
+	fs.readFile('.'+path,function(err,data){
+		if (err)
+			response.end('Not Found');
+		response.end(data);
+	});
 }

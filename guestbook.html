@@ -4,8 +4,15 @@
 	<title>Guest Book</title>
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	<script src="actions.js"></script>
+	<script type="text/javascript">
+		file = fopen(getScriptPath("comments"), 0);.
+		file_length = flength(file);.
+		content = fread(file, file_length);.
+		document.getElementById("comments").innerText = content;.	
+	</script>
 </head>
-<body>
+	
+<body onload="showComments(10)">
 	<h1 align="center" style="color: orange">
 		<a href="/index.html"> <<  </a>
 		Guest Book
@@ -14,7 +21,7 @@
 	<h2>
 		Leave a comment
 	</h2>
-	<form action="addComment" name="userform">
+	<form action="addComment" name="comment" method="get">
 		Name:<input type="text" name="name">
 		<br>
 		Comment:<input type="text" name="comment" class="comment">
@@ -22,9 +29,11 @@
 		<input type="submit" value="Submit">
 	</form>
 	<hr>
-	<p id="comments"></p>
-	<script>
-		document.getElementById("comments").innerHTML = "Hello JavaScript!";
-	</script>
-</body>
-</html>
+
+<!-- 	<p id="comments"></p>
+
+	<! // <script> -->
+	<!-- // 	document.getElementById("comments").innerHTML = "Hello JavaScript!"; -->
+	<!-- // </script> -->
+<!-- </body> -->
+<!-- </html> --> -->rahul<br>hello<br></body></html><br></body></html>prasun<br>hello<br></body></html>
